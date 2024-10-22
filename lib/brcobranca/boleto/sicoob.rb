@@ -61,7 +61,11 @@ module Brcobranca
       #
       # @return [String] 8 caracteres numéricos.
       def nosso_numero_boleto
-        "#{nosso_numero}#{nosso_numero_dv}"
+        if !valida_digito_verificador
+          "#{nosso_numero}"
+        else
+          "#{nosso_numero}#{nosso_numero_dv}"
+        end
       end
 
       # 3.13. Nosso número: Código de controle que permite ao Sicoob e à empresa identificar os dados da cobrança que deu origem ao boleto.
