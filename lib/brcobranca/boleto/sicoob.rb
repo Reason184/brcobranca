@@ -5,8 +5,8 @@ module Brcobranca
     class Sicoob < Base # Sicoob (Bancoob)
       validates_length_of :agencia, maximum: 4, message: 'deve ser menor ou igual a 4 dígitos.'
       validates_length_of :conta_corrente, maximum: 8, message: 'deve ser menor ou igual a 8 dígitos.'
-      validates_length_of :nosso_numero, maximum: 7, message: 'deve ser menor ou igual a 7 dígitos.', if: Proc.new { valida_digito_verificador }
-      validates_length_of :nosso_numero, maximum: 8, message: 'deve ser menor ou igual a 8 dígitos.', if: Proc.new { !valida_digito_verificador }
+      validates_length_of :nosso_numero, maximum: 7, message: 'deve ser menor ou igual a 7 dígitos.', if: :valida_digito_verificador_true?
+      validates_length_of :nosso_numero, maximum: 8, message: 'deve ser menor ou igual a 8 dígitos.', if: :valida_digito_verificador_false?
       validates_length_of :convenio, maximum: 7, message: 'deve ser menor ou igual a 7 dígitos.'
       validates_length_of :variacao, maximum: 2, message: 'deve ser menor ou igual a 2 dígitos.'
       validates_length_of :quantidade, maximum: 3, message: 'deve ser menor ou igual a 3 dígitos.'
@@ -14,6 +14,14 @@ module Brcobranca
       def initialize(campos = {})
         campos = { carteira: '1', variacao: '01', quantidade: '001' }.merge!(campos)
         super(campos)
+      end
+
+      def valida_digito_verificador_true?
+        valida_digito_verificador
+      end
+
+      def valida_digito_verificador_falso?
+        !valida_digito_verificador
       end
 
       # Codigo do banco emissor (3 dígitos sempre)
