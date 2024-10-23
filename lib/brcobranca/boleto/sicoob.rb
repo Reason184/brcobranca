@@ -96,8 +96,6 @@ module Brcobranca
             ) { |t| 11 - (t % 11) }
 
             codigo = "#{Regexp.last_match[1]}#{codigo_dv}#{Regexp.last_match[2]}"
-          else
-            codigo = "#{Regexp.last_match[1]}#{Regexp.last_match[2]}"
           end
         else
           self.errors.add(:base, :too_long, message: "tamanho(#{codigo.size}) prévio do código de barras(#{codigo}) inválido, deveria ser 43 dígitos")
