@@ -47,8 +47,20 @@ module Brcobranca
       #
       # @return [String] 7 caracteres numéricos.
       def nosso_numero=(valor)
-        @nosso_numero = valor.to_s.rjust(7, '0') if valor && valida_digito_verificador
-        @nosso_numero = valor.to_s.rjust(8, '0') if valor && !valida_digito_verificador
+        puts "valida_digito_verificador: #{valida_digito_verificador}".red
+        @nosso_numero = valor.to_s.rjust(7, '0') if valor && self.valida_digito_verificador
+        @nosso_numero = valor.to_s.rjust(8, '0') if valor && !self.valida_digito_verificador
+      end
+
+      # Número documento
+      #
+      # @return [String] 7 caracteres numéricos.
+      def valida_digito_verificador=(valor)
+        puts "valida_digito_verificador_inicio: #{valor}".red
+        @valida_digito_verificador = valor
+        puts "valida_digito_verificador_fim: #{valida_digito_verificador}".red
+        puts "valida_digito_verificador_fim: #{self.valida_digito_verificador}".red
+
       end
 
       # Quantidade
@@ -117,6 +129,7 @@ module Brcobranca
       #    34 a 41      08                 Nosso número do boleto
       #    41 a 44      03                 Número da parcela a que o boleto se refere - "001" se parcela única
       def codigo_barras_segunda_parte
+        puts "valida_digito_verificador: #{valida_digito_verificador}".red
         "#{carteira}#{agencia}#{variacao}#{convenio}#{nosso_numero_boleto}#{quantidade}"
       end
     end
