@@ -68,6 +68,43 @@ module Brcobranca
         end
       end
 
+      # Codigo de barras do boleto
+      #
+      # O codigo de barra para cobrança contém 44 posições dispostas da seguinte forma:<br/>
+      # Posição |Tamanho |Conteúdo<br/>
+      # 01 a 03 | 3  | Identificação do Banco<br/>
+      # 04 a 04 | 1  | Código da Moeda (Real = 9, Outras=0)<br/>
+      # 05 a 05 | 1  |  Dígito verificador do Código de Barras<br/>
+      # 06 a 09 | 4  | Fator de Vencimento (Vide Nota)<br/>
+      # 10 a 19 | 10 |  Valor<br/>
+      # 20 a 44 | 25 |  Campo Livre - As posições do campo livre ficam a critério de cada Banco arrecadador.<br/>
+      #
+      # @raise [Brcobranca::BoletoInvalido] Caso as informações fornecidas não sejam suficientes ou sejam inválidas.
+      # @return [String] código de barras formado por 44 caracteres numéricos.
+      #
+      # No caso do Sicoob, boletos emitidos após o dia 21/10/2024 não possuem mais a lógica do digito verificador
+      def codigo_barras
+        raise Brcobranca::BoletoInvalido, self unless valid?
+        codigo = codigo_barras_primeira_parte # 18 digitos
+        codigo << codigo_barras_segunda_parte # 25 digitos
+        if codigo =~ /^(\d{4})(\d{39})$/
+
+          if valida_digito_verificador
+            codigo_dv = codigo.modulo11(
+              multiplicador: (2..9).to_a,
+              mapeamento: { 0 => 1, 10 => 1, 11 => 1 }
+            ) { |t| 11 - (t % 11) }
+
+            codigo = "#{Regexp.last_match[1]}#{codigo_dv}#{Regexp.last_match[2]}"
+          else
+            codigo = "#{Regexp.last_match[1]}#{Regexp.last_match[2]}"
+          end
+        else
+          self.errors.add(:base, :too_long, message: "tamanho(#{codigo.size}) prévio do código de barras(#{codigo}) inválido, deveria ser 43 dígitos")
+          raise Brcobranca::BoletoInvalido, self
+        end
+      end
+
       # 3.13. Nosso número: Código de controle que permite ao Sicoob e à empresa identificar os dados da cobrança que deu origem ao boleto.
       #
       # Para o cálculo do dígito verificador do nosso número, deverá ser utilizada a fórmula abaixo:
