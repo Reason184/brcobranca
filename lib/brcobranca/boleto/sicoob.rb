@@ -20,7 +20,7 @@ module Brcobranca
         valida_digito_verificador
       end
 
-      def valida_digito_verificador_falso?
+      def valida_digito_verificador_false?
         !valida_digito_verificador
       end
 
