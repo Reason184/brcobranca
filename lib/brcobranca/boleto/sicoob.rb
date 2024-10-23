@@ -47,7 +47,7 @@ module Brcobranca
       #
       # @return [String] 7 caracteres numéricos.
       def nosso_numero=(valor)
-        puts "valida_digito_verificador: #{valida_digito_verificador}".red
+        puts "valida_digito_verificador_nosso_numero: #{valida_digito_verificador}".red
         @nosso_numero = valor.to_s.rjust(7, '0') if valor && self.valida_digito_verificador
         @nosso_numero = valor.to_s.rjust(8, '0') if valor && !self.valida_digito_verificador
       end
@@ -56,11 +56,7 @@ module Brcobranca
       #
       # @return [String] 7 caracteres numéricos.
       def valida_digito_verificador=(valor)
-        puts "valida_digito_verificador_inicio: #{valor}".red
         @valida_digito_verificador = valor
-        puts "valida_digito_verificador_fim: #{valida_digito_verificador}".red
-        puts "valida_digito_verificador_fim: #{self.valida_digito_verificador}".red
-
       end
 
       # Quantidade
